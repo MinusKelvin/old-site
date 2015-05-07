@@ -118,3 +118,7 @@ a#home:hover, a#home:focus {
 a#home:focus {
 	text-decoration: underline;
 }
+ul.projects {
+	list-style-type: none;
+	padding-left: 1em;
+}
