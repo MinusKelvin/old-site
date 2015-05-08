@@ -87,7 +87,7 @@ a.navbarl, a.navbarr, a.navbar {
 	display: flex;
 	color: white;
 	text-decoration: none;
-	transition: background-color 0.25s;
+	transition: background-color 0.25s, inherit;
 	outline: none;
 }
 a.navbarl {
