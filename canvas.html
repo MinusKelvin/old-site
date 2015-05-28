@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Game</title>
+	</head>
+	<body>
+		<canvas id="c" width="800" height="480" style="box-shadow: 0 0 0.5em gray;"></canvas>
+		<p id="disp">hi</p>
+		<script>
+			canvas = document.getElementById("c");
+			g = canvas.getContext("2d");
+			px = 0;
+			py = 0;
+			pxv = 1;
+			pyv = 1;
+			c = "#000000"
+			var incrementColor = function(color, step){
+				var colorToInt = parseInt(color.substr(1), 16),                     // Convert HEX color to integer
+					nstep = parseInt(step);                                         // Convert step to integer
+				if(!isNaN(colorToInt) && !isNaN(nstep)){                            // Make sure that color has been converted to integer
+					colorToInt += nstep;                                            // Increment integer with step
+					var ncolor = colorToInt.toString(16);                           // Convert back integer to HEX
+					ncolor = '#' + (new Array(7-ncolor.length).join(0)) + ncolor;   // Left pad "0" to make HEX look like a color
+					if(/^#[0-9a-f]{6}$/i.test(ncolor)){                             // Make sure that HEX is a valid color
+						return ncolor;
+					}
+				}
+				return color;
+			};
+			function draw() {
+				for (var i = 0; i < 100; i++) {
+					c = incrementColor(c,1);
+					g.fillStyle = c;
+					g.fillRect(px,py,50,50);
+					px += pxv;
+					py += pyv;
+					if (px == 0 || px == 800-50) {
+						pxv = -pxv;
+					}
+					if (py == 0 || py == 480-50) {
+						pyv = -pyv;
+					}
+				}
+				document.getElementById("disp").innerHTML = c;
+			}
+			setInterval(draw, 16);
+		</script>
+	</body>
+</html>
