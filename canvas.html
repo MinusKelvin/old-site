@@ -31,13 +31,18 @@
 				for (var i = 0; i < 100; i++) {
 					c = incrementColor(c,1);
 					g.fillStyle = c;
-					g.fillRect(px,py,50,50);
+					if (c == "#ffffff")
+						c = "#000000";
+					g.globalAlpha = 0.01;
+					g.beginPath();
+					g.arc(px+25,py+25,25,0,Math.PI*2,false);
+					g.fill();
 					px += pxv;
 					py += pyv;
-					if (px == 0 || px == 800-50) {
+					if (px <= 0 || px >= 800-50) {
 						pxv = -pxv;
 					}
-					if (py == 0 || py == 480-50) {
+					if (py <= 0 || py >= 480-50) {
 						pyv = -pyv;
 					}
 				}
