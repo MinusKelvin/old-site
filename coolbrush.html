@@ -11,14 +11,12 @@
 				canvas = document.getElementById("c");
 				canvas.width = window.innerWidth;
 				canvas.height = window.innerHeight;
+				g = canvas.getContext("2d");
+				g.clearRect(0,0,canvas.width,canvas.height);
+				g.globalAlpha = 0.05;
+				pointlist = [];
 			}
 			resize();
-			
-			canvas = document.getElementById("c");
-			g = canvas.getContext("2d");
-			g.clearRect(0,0,canvas.width,canvas.height);
-			g.globalAlpha = 0.05;
-			pointlist = [];
 			
 			mdown = false;
 			prev = {"x":0,"y":0};
@@ -30,23 +28,25 @@
 			}
 			function mv(event) {
 				if (mdown) {
-					pointlist.push({"x":event.x,"y":event.y});
-					
-					for (var i = 0; i < pointlist.length-1; i++) {
-						if (distsq(event,pointlist[i]) < 25*25) {
-							g.beginPath();
-							g.moveTo(event.x,event.y);
-							g.lineTo(pointlist[i].x,pointlist[i].y);
-							g.stroke();
-						}
-					}
+					placePoint(event);
 				}
 			}
 			function distsq(p1,p2) {
 				var p = {"x":p1.x-p2.x,"y":p1.y-p2.y};
 				return p.x*p.x + p.y*p.y;
 			}
-			draw();
+			function placePoint(event) {
+				pointlist.push({"x":event.x,"y":event.y});
+				
+				for (var i = 0; i < pointlist.length-1; i++) {
+					if (distsq(event,pointlist[i]) < 25*25) {
+						g.beginPath();
+						g.moveTo(event.x,event.y);
+						g.lineTo(pointlist[i].x,pointlist[i].y);
+						g.stroke();
+					}
+				}
+			}
 		</script>
 	</body>
 </html>
