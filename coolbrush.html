@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html style="width: 100%; height: 100%; margin: 0px; overflow: hidden;">
+	<head>
+		<title>Game</title>
+	</head>
+	<body style="width: 100%; height: 100%; margin: 0px; overflow: hidden;" onresize="resize();">
+		<canvas id="c" width="800" height="480" style="box-shadow: 0 0 0.5em gray;" onmousedown="md();" onmouseup="mu();" onmousemove="mv(event);"></canvas>
+		<h3 style="position:absolute; left:10px; top:10px; font-family:Arial; padding:0px; margin:0;">Click and drag to draw!</h3>
+		<script>
+			function resize() {
+				canvas = document.getElementById("c");
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+			}
+			resize();
+			
+			canvas = document.getElementById("c");
+			g = canvas.getContext("2d");
+			g.clearRect(0,0,canvas.width,canvas.height);
+			g.globalAlpha = 0.05;
+			pointlist = [];
+			
+			mdown = false;
+			prev = {"x":0,"y":0};
+			function md() {
+				mdown = true;
+			}
+			function mu() {
+				mdown = false;
+			}
+			function mv(event) {
+				if (mdown) {
+					pointlist.push({"x":event.x,"y":event.y});
+					
+					for (var i = 0; i < pointlist.length-1; i++) {
+						if (distsq(event,pointlist[i]) < 25*25) {
+							g.beginPath();
+							g.moveTo(event.x,event.y);
+							g.lineTo(pointlist[i].x,pointlist[i].y);
+							g.stroke();
+						}
+					}
+				}
+			}
+			function distsq(p1,p2) {
+				var p = {"x":p1.x-p2.x,"y":p1.y-p2.y};
+				return p.x*p.x + p.y*p.y;
+			}
+			draw();
+		</script>
+	</body>
+</html>
