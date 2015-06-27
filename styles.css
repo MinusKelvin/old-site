@@ -115,3 +115,15 @@ ul.project-list {
 	list-style-type: none;
 	padding-left: 16px;
 }
+
+input[type=email] {
+	width: 50%;
+}
+
+textarea {
+	min-width: 50%;
+	max-width: 50%;
+	font-family: sans-serif;
+	padding-left: 1px;
+	padding-right: 1px;
+}
