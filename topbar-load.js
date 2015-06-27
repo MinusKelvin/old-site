@@ -11,7 +11,11 @@ function init() {
     // Fix whitespace problem with display: inline-block elements
     for (var i = 0; i < list.childNodes.length; i++) {
         if (list.childNodes[i].type === undefined) {
-            list.childNodes[i].remove();
+            var d = list.childNodes[i];
+            if (d.remove)
+                d.remove(); // Not-IE
+            else
+                d.removeNode(); // IE
         }
     }
 }
