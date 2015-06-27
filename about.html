@@ -2,34 +2,37 @@
 <html>
 	<head>
 		<meta charset="utf-8"/>
-		<title>About - MinusKelvin</title>
+		<title>About</title>
 		<link rel="stylesheet" type="text/css" href="styles.css"/>
+		<script src="topbar-load.js"></script>
 	</head>
-	<body>
-		<div class="topbar">
-			<div class="lefttopbar">
-				<a href="index.html" id="home">
-					<h2 id="title">
-						MinusKelvin
-					</h2>
-				</a>
-			</div>
-			<div class="navbar">
-				<a class="navbarl" style="border-bottom-color: blue" href="about.html">
-					<h3>About</h3>
-				</a>
-				<a class="navbar" style="border-bottom-color: green" href="projects.html">
-					<h3>Projects</h3>
-				</a>
-				<a class="navbarr" style="border-bottom-color: red" href="contact.html">
-					<h3>Contact</h3>
-				</a>
-			</div>
-		</div>
-		<div class="content">
+	<body onload="init()">
+		<header>
+			<a id="home" href="index.html">
+				<h2>MinusKelvin</h2>
+			</a>
+            <ul id="navbar-items">
+				<li>
+					<a class="navbar" href="about.html">
+						<h3>About</h3>
+					</a>
+				</li>
+                <li>
+					<a class="navbar" href="projects.html">
+						<h3>Projects</h3>
+					</a>
+				</li>
+                <li>
+					<a class="navbar" href="contact.html">
+						<h3>Contact</h3>
+					</a>
+				</li>
+			</ul>
+		</header>
+		<div id="content">
 			<h1>About Me</h1>
 			<p>I am a Java programmer. You can find a list of my projects <a href="projects.html">here</a>,
-			and my GitHub profile <a href="https://github.com/MinusKelvin/">here</a></p>
+			and my GitHub profile <a href="https://github.com/MinusKelvin/">here</a>.</p>
 		</div>
 	</body>
 </html>

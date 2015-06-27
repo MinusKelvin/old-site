@@ -1,127 +1,117 @@
-body {
+html, body {
 	margin: 0;
-	padding: 0;
-	color: #222;
-	background-color: #eee;
 	font-family: "Segoe UI", Arial, sans-serif;
-}
-h1, h2, h3, h4, h5, h6 {
-	font-family: "Segoe UI Light", "Segoe UI", Arial, sans-serif;
 	font-weight: normal;
+	background-color: #eee;
 }
-h2#title {
-	margin: 0;
-	padding: 0 1em;
-}
-div.topbar {
-	position: fixed;
-	background-color: #333;
-	color: #fff;
-	width: 100%;
-	height: 4em;
-	box-shadow: 0 0 0.5em gray;
-	top: 0;
-	left: 0;
-	border-collapse: collapse;
-	min-width: 800px;
-}
-div.navbar {
-	height: 4em;
-	width: 50%;
-	float: left;
-}
-div.lefttopbar {
-	width: 30%;
-	height: 4em;
-	float: left;
-}
-div.content {
-	margin: 4em auto auto auto;
-	padding: 1em;
-	border: 2px solid #ddd;
-	border-top: none;
-	background-color: #fff;
-	min-width: 400px;
-	width: 55%;
-}
+
 a {
-	color: #55a;
+	color: #66c;
+	text-decoration: none;
 	transition: color 0.25s;
-	text-decoration: none;
 }
+
 a:hover, a:focus {
-	color: #77f;
+	color: blue;
 	text-decoration: underline;
 }
-a:focus {
-	outline: 1px dotted black;
+
+header {
+	background-color: #333;
+	box-shadow: 0 0 8px gray;
+	position: fixed;
+	width: 100%;
+	top: 0;
+	height: 64px;
+	max-height: 64px;
+	min-height: 64px;
+	white-space: nowrap;
 }
-a.button {
-	background-color: #36f;
-	border: 0px solid #222;
-	border-radius: 0.5em;
-	color: white;
-	padding: 0.5em;
-	font-size: 1.125em;
-	font-family: "Segoe UI Light", "Segoe UI", Arial, sans-serif;
+
+header a {
+	color: #eee;
 	text-decoration: none;
-	transition: background-color 0.5s;
-	outline: none;
+	padding: 16px;
+	display: inline-block;
+	vertical-align: top;
 }
-a.button:hover, a.button:focus {
-	background-color: #12f;
-	color: white;
-}
-a.button:focus {
-	text-decoration: underline;
-}
-a.navbarl, a.navbarr, a.navbar {
-	border-bottom: 0.25em solid black;
-	border-right: 0.0625em solid gray;
-	border-left: 0.0625em solid gray;
-	border-collapse: collapse;
-	height: 3.75em;
-	padding: 0 1em;
-	float: left;
-	align-items: center;
-	display: flex;
-	color: white;
-	text-decoration: none;
+
+header a.navbar {
+	border-left: 1px solid gray;
+	border-right: 1px solid gray;
+	border-bottom: 4px solid gray;
+	padding-bottom: 12px;
+	height: 32px;
+	background-color: #333;
 	transition: background-color 0.25s, inherit;
-	outline: none;
 }
-a.navbarl {
-	border-left: 0.125em solid gray;
-}
-a.navbarr {
-	border-right: 0.125em solid gray;
-}
-a.navbar:hover, a.navbarr:hover, a.navbarl:hover, a.navbar:focus, a.navbarr:focus, a.navbarl:focus {
+
+header a.navbar:hover, header a.navbar:focus {
 	color: #ddd;
 	background-color: #222;
-}
-a.navbar:focus, a.navbarr:focus, a.navbarl:focus {
-	text-decoration: underline;
-}
-a#home {
-	color: #aaf;
-	align-items: center;
-	display: flex;
-	height: 4em;
-	float: right;
 	text-decoration: none;
-	outline: none;
 }
-a#home:hover, a#home:focus {
-	color: #eef;
+
+header a.navbar#left {
+	border-left: 2px solid gray;
 }
-a#home:focus {
-	text-decoration: underline;
+
+header a.navbar#right {
+	border-right: 2px solid gray;
 }
-ul.projects {
+
+header a#home {
+	color: #aaf;
+	margin-left: 20%;
+	text-decoration: none;
+}
+
+header a#home:hover, header a#home:focus {
+	color: white;
+}
+
+header h3, header h2 {
+	margin: 0;
+}
+
+header a.navbar h3 {
+	position: relative;
+	bottom: -4px;
+}
+
+header ul li, header ul {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	height: 100%;
 	list-style-type: none;
-	padding-left: 1em;
+	white-space:
 }
+
+div#content {
+	margin: 64px auto auto auto;
+	padding: 0px 16px 16px 16px;
+	width: 55%;
+	min-width: 400px;
+	border: 2px solid #ddd;
+	border-top: none;
+	background-color: white;
+	overflow: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 200;
+}
+
+p {
+	text-align: justify;
+}
+
 img {
-	max-width: 90%;
+	max-width: 100%;
+}
+
+ul.project-list {
+	list-style-type: none;
+	padding-left: 16px;
 }
