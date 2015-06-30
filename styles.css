@@ -16,7 +16,7 @@ a:hover, a:focus {
 	text-decoration: underline;
 }
 
-header {
+div#header {
 	background-color: #333;
 	box-shadow: 0 0 8px gray;
 	position: fixed;
@@ -28,64 +28,73 @@ header {
 	white-space: nowrap;
 }
 
-header a {
+div#header a {
 	color: #eee;
 	text-decoration: none;
 	padding: 16px;
 	display: inline-block;
 	vertical-align: top;
+	height: 32px; /* 16px padding on top and bottom, 64-16-16 = 32 */
 }
 
-header a.navbar {
+div#header a.navbar {
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
 	border-bottom: 4px solid gray;
 	padding-bottom: 12px;
-	height: 32px;
 	background-color: #333;
 	transition: background-color 0.25s, inherit;
 }
 
-header a.navbar:hover, header a.navbar:focus {
+div#header a.navbar:hover, div#header a.navbar:focus {
 	color: #ddd;
 	background-color: #222;
 	text-decoration: none;
 }
 
-header a.navbar#left {
-	border-left: 2px solid gray;
-}
-
-header a.navbar#right {
-	border-right: 2px solid gray;
-}
-
-header a#home {
+div#header a#home {
 	color: #aaf;
-	margin-left: 20%;
 	text-decoration: none;
+	border-right: 1px solid gray;
 }
 
-header a#home:hover, header a#home:focus {
+div#header a#home:hover, div#header a#home:focus {
 	color: white;
 }
 
-header h3, header h2 {
+div#header h3, div#header h2 {
 	margin: 0;
 }
 
-header a.navbar h3 {
+div#header a.navbar h3 {
 	position: relative;
 	bottom: -4px;
 }
 
-header ul li, header ul {
+div#header ul li, div#header ul {
 	display: inline-block;
 	margin: 0;
 	padding: 0;
 	height: 100%;
 	list-style-type: none;
-	white-space:
+	white-space: nowrap;
+	vertical-align: top;
+}
+
+div#borderfill {
+	width: 1px;
+	height: 100%;
+	background-color: gray;
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+}
+
+div#header-center {
+	width: 60%;
+	margin: auto;
+	min-width: 400px;
+	height: 100%;
 }
 
 div#content {
