@@ -1,0 +1,384 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>OpenGL Tutorial</title>
+		<link rel="stylesheet" type="text/css" href="styles.css"/>
+	</head>
+	<body>
+		<div id="header">
+			<div id="header-center"><!-- Yay for getting-around-certain-aspects-of-distplay-inline-block hackery!
+			--><a id="home" href="index.html">
+					<h2>MinusKelvin</h2>
+				</a><!--
+			--><ul id="navbar-items"><!--
+				--><li>
+						<a class="navbar" href="about.html" style="border-bottom-color: blue">
+							<h3>About</h3>
+						</a>
+					</li><!--
+				--><li>
+						<a class="navbar" href="projects.html" style="border-bottom-color: green">
+							<h3>Projects</h3>
+						</a>
+					</li><!--
+				--><li>
+						<a class="navbar" href="contact.html" style="border-bottom-color: red">
+							<h3>Contact</h3>
+						</a>
+					</li><!--
+			--></ul><!--
+			--><div id="borderfill"></div><!--
+		--></div>
+		</div>
+		<div id="content">
+			<h1>Contents</h1>
+            <ol class="contents-list">
+                <li><a href="#what-is-opengl">What is OpenGL?</a></li>
+                <li>
+                    <a href="#first-triangle">Rendering Our First Triangle</a>
+                    <ol class="contents-sublist">
+                        <li><a href="#vaos">Vertex Array Objects</a></li>
+                        <li><a href="#vbos">Vertex Buffer Objects</a></li>
+                        <li><a href="#telling-gl-about-the-vertex-data">Telling OpenGL About the Vertex Data</a></li>
+                        <li><a href="#shaders">Shaders</a></li>
+						<li><a href="#render-the-triangle">Rendering the Triangle</a></li>
+                    </ol>
+                </li>
+            </ol>
+            <h1>
+                <a id="what-is-opengl" class="scrollitem"></a>
+                What is OpenGL
+            </h1>
+            <p>
+                OpenGL is a library that lets you do hardware acclerated
+                graphics. It is an open standard and is cross-platform, meaning
+                applications that use it can easily be ported with zero, if not
+                few, changes to their graphics systems.
+            </p>
+            <p>
+                There have been many versions of OpenGL, from 1.0 to 4.5 (as of
+                the time of writing). The version of OpenGL this tutorial will
+                be covering is OpenGL 3.3, since it is the most recent version
+                widely supported by graphics card drivers and is Core profile.
+                After you have created your OpenGL 3.3 Core Profile context, you
+                can start to use OpenGL.
+            </p>
+            <p>
+                OpenGL works by taking a bunch of vertices, creating triangles
+                from them, and then turning those triangles into pixels on the
+                screen. A vertex, in simple terms, is a point that contains
+                information, called attributes, such as color, texture
+                corrdinates, position, and so on. OpenGL uses these values to
+                produce each pixel's color. This is an overly-simplified
+                explanation, but should help you get an idea of how OpenGL
+                works.
+            </p>
+            <h1>
+                <a id="first-triangle" class="scrollitem"></a>
+                Rendering Our First Triangle
+            </h1>
+            <h2>
+                <a id="vaos" class="scrollitem"></a>
+                Vertex Array Objects
+            </h2>
+            <p>
+                The first thing you need to do is create a Vertex Array Object,
+                or VAO for short. I think these are poorly named, because these
+                do not actually store vertices. I'll get into VAOs more later,
+                but just need know you need one of these to render anything.
+            </p>
+            <pre>
+<span class="code-comment">// C, in initialization</span>
+<span class="code-type">GLuint</span> <span class="code-var">vao</span>;
+<span class="code-func">glGenVertexArrays</span>(<span class="code-literal">1</span>, &amp;<span class="code-var">vao</span>);
+<span class="code-func">glBindVertexArray</span>(<span class="code-var">vao</span>);
+</pre>
+            <p>
+                Here we have a new type and two functions. <code>GLuint</code>
+                is simply a 32-bit unsigned integer. We declare it with
+                <code>GLuint</code> because different platforms could make
+                <code>unsigned int</code>s different sizes and OpenGL needs a
+                32-bit unsigned integer.
+            </p>
+            <p>
+                <code>glGenVertexArrays</code> generates bindings for VAOs. The
+                first parameter is the number of VAOs you want to generate, and
+                the second parameter is a pointer to an array of
+                <code>GLuint</code>s that OpenGL will store the bindings in.
+                Since we're only generating one VAO, we create a single integer
+                and pass a pointer to it. <code>glBindVertexArray</code> tells
+                OpenGL which VAO to use, in this case the one we just made.
+            </p>
+            <h2>
+                <a id="vbos" class="scrollitem"></a>
+                Vertex Buffer Objects
+            </h2>
+            <p>
+                The next thing we need to do is give OpenGL the vertex data we
+                want it to render. For this we use Vertex Buffer Objects, or
+                VBOs for short. A VBO is a block of memory that is allocated on
+                the graphics processor.
+            </p>
+            <pre>
+<span class="code-comment">// C, in initialization</span>
+<span class="code-keyword">const</span> <span class="code-type">GLfloat</span> <span class="code-var">triangle</span>[<span class="code-literal">9</span>] = {
+        -<span class="code-literal">1.0f</span>, -<span class="code-literal">1.0f</span>, <span class="code-literal">0.0f</span>,
+        <span class="code-literal">1.0f</span>,  -<span class="code-literal">1.0f</span>, <span class="code-literal">0.0f</span>,
+        <span class="code-literal">0.0f</span>,  <span class="code-literal">1.0f</span>,  <span class="code-literal">0.0f</span>,
+};
+
+<span class="code-type">GLuint</span> <span class="code-var">vbo</span>;
+<span class="code-func">glGenBuffers</span>(<span class="code-literal">1</span>, &amp;<span class="code-var">vbo</span>);
+<span class="code-func">glBindBuffer</span>(<span class="code-constant">GL_ARRAY_BUFFER</span>, <span class="code-var">vbo</span>);
+<span class="code-func">glBufferData</span>(<span class="code-constant">GL_ARRAY_BUFFER</span>, <span class="code-keyword">sizeof</span>(<span class="code-var">triangle</span>), <span class="code-var">triangle</span>, <span class="code-constant">GL_STATIC_DRAW</span>);
+</pre>
+            <p>
+                We'll be drawing a triangle that stretches across the
+                bottom-left corner and bottom-right corner and up to the
+                top-middle of our window. This is reflected in our
+                <code>triangle</code> array (which we declare with
+                <code>GLfloat</code> to ensure a 32-bit float). You might notice
+                that these are not screen coordinates, and this tutorial will
+                touch on that later. Our vertices from this triangle consist of
+                just one attribute, a position, which we have represented as 3
+                floats. The positions of the vertices are the only requirement
+                for rendering anything.
+            </p>
+            <p>
+                <code>glGenBuffers</code> looks very similar to
+                <code>glGenVertexArrays</code>, and it is&mdash;the only thing
+                that's changed is what type of object we're generating.
+                In <code>glBindBuffer</code> we need to specify what target we
+                want to bind our vbo to. We want to store vertex data in it, so
+                we'll go with <code>GL_ARRAY_BUFFER</code> which can be used as
+                inputs for vertex data. Different targets do different things,
+                so this value will change with what we want the buffer to do.
+            </p>
+            <p>
+                On that last line we call <code>glBufferData</code>, and that
+                does two things: Firstly it allocates (or reallocates, if you've
+                already allocated space for the buffer)
+                <code>sizeof(triangle)</code> bytes of storage (specified by the
+                second parameter) for the buffer bound to
+                <code>GL_ARRAY_BUFFER</code> (specified by the first parameter).
+                Secondly it copies the data at whatever pointer we've passed it
+                into the buffer. Alternatively we could pass a null pointer to
+                tell OpenGL not to copy anything. The last parameter is a hint
+                that tells OpenGL how to expect we use the buffer. We use
+                <code>GL_STATIC_DRAW</code> because we'll be drawing with the
+                buffer and we won't be updating its contents very much. This
+                hint doesn't restrict what you can do with the buffer, it may
+                just help OpenGL use it more efficently.
+            </p>
+            <h2>
+                <a id="telling-gl-about-the-vertex-data" class="scrollitem"></a>
+                Telling OpenGL About the Vertex Data
+            </h2>
+            <p>
+                At this point, we have a buffer containing the information we
+                need to draw a triangle. But we haven't told OpenGL that the
+                data exists, what type it is, where it should go, or how it's
+                structured.
+            </p>
+            <pre>
+<span class="code-comment">// C, in initializer</span>
+<span class="code-func">glVertexAttribPointer</span>(<span class="code-literal">0</span>, <span class="code-literal">3</span>, <span class="code-constant">GL_FLOAT</span>, <span class="code-constant">GL_FALSE</span>, <span class="code-literal">0</span>, (<span class="code-type">GLvoid</span>*) <span class="code-literal">0</span>);
+<span class="code-func">glEnableVertexAttribArray</span>(<span class="code-literal">0</span>);
+</pre>
+            <p>
+                The handy function <code>glVertexAttribPointer</code> tells
+                OpenGL everything it needs to know about an attribute. We have
+                one attribute that is made of three (second parameter) floats
+                (third parameter) that shouldn't be normalized (fourth
+                parameter). We also tell OpenGL that the data is tightly packed
+                (fifth parameter) and starts at the beginning of the buffer
+                currently bound to the <code>GL_ARRAY_BUFFER</code> target. The
+                first parameter tells OpenGL that this attribute will get sent
+                to index zero in the vertex shader. We'll talk about shaders
+                later in this tutorial.
+            </p>
+            <p>
+                The second function, <code>glEnableVertexAttribArray</code>,
+                tells OpenGL that we're using the attribute for index 0. If you
+                need to disable a vertex attribute, you can do so with
+                <code>glDisableVertexAttribArray</code>.
+            </p>
+            <h3>A note on VAOs</h3>
+            <p>
+                <code>glVertexAttribPointer</code> and
+                <code>glEnableVertexAttribArray</code> both affect whatever VAO
+                is currently bound. The buffer that was bound to
+                <code>GL_ARRAY_BUFFER</code> when
+                <code>glVertexAttribPointer</code> was called is stored by the
+                VAO, aswell as the index of the attribute, the number of
+                components of what type of data is stored, if that data should
+                be normalized, its stride or if its tightly packed, and its
+                offset into the buffer. This means that you can preform these
+                function with different VAOs bound and switch which set of
+                attribute information you want to use by just calling
+                <code>glBindVertexArray</code>.
+            </p>
+            <h2>
+                <a id="shaders" class="scrollitem"></a>
+                Shaders
+            </h2>
+			<p>
+				OpenGL doesn't actually know what any of the attributes you tell
+				it about do. You have to write some code for the graphics
+				processor in order to specify that. There are two shaders we
+				need to write: a vertex shader and a fragment shader. The vertex
+				shader runs on every vertex OpenGL processes, and the fragment
+				shader runs on every pixel OpenGL processes.
+			</p>
+			<h3>Vertex Shader</h3>
+			<pre>
+<span class="code-comment">// GLSL, Vertex Shader</span>
+<span class="code-keyword">#version</span> 330 core
+
+<span class="code-keyword">layout</span>(<span class="code-var">location</span> = <span class="code-literal">0</span>) <span class="code-keyword">in</span> <span class="code-type">vec3</span> <span class="code-var">position</span>;
+
+<span class="code-keyword">void</span> <span class="code-func">main</span>() {
+    <span class="code-var">gl_Position</span> = <span class="code-type">vec4</span>(<span class="code-var">position</span>, <span class="code-literal">1.0</span>);
+}
+</pre>
+			<p>
+				The first thing we do in the shader, and all of our shaders
+				actually, is specify the version of GLSL we're using. The GLSL
+				version that goes with OpenGL 3.3 Core profile is <code>330
+				core</code>. This must come become before anything else in the
+				shader except for whitespace and comments. Next we say that we
+				have a <code>vec3</code> input, or an input made of three
+				floats, and it's <code>layout</code> qualifier says that it
+				should be at index 0, the same place we said our position
+				attribute should go. We give the input the name
+				<code>position</code>, because that makes it easy for us to see
+				what it's for.
+			</p>
+			<p>
+				Next we have the <code>main</code> function, and this is where
+				our shaders starts executing. We only need to tell OpenGL what
+				the position of our vertex is, so we set it to a
+				<code>vec4</code> with it's first 3 components, the x, y, and z
+				axes the same as in our <code>position</code> attribute, and its
+				w component equal to 1. This might seem really strange, a four
+				component position vector? We're not working in 4D space!
+				Actually we are working in 3D space, but not with standard
+				cartesian (x,y,z) coordinates. We're using homogeneous (x,y,z,w)
+				coordinates, which include a special w component. I'll explain
+				what this does and why it's important for how computer graphics
+				work later in this tutorial.
+			</p>
+			<h3>Fragment Shader</h3>
+			<pre>
+<span class="code-comment">// GLSL, Fragment Shader</span>
+<span class="code-keyword">#version</span> 330 core
+
+<span class="code-keyword">out</span> <span class="code-type">vec4</span> <span class="code-var">color</span>;
+
+<span class="code-keyword">void</span> <span class="code-func">main</span>() {
+    <span class="code-var">color</span> = <span class="code-type">vec4</span>(<span class="code-literal">1.0</span>);
+}
+</pre>
+			<p>
+				In the fragment shader, instead of specifying and input, we
+				specify an output. OpenGL automatically interperts this output
+				as a color, but not because of it's name. We could have named it
+				anything and OpenGL would still interpert it the same. Our
+				output is a four component vector, for the red, blue, green, and
+				alpha channels. The alpha channel doesn't affect the final
+				color unless you tell OpenGL to do something with it. In our
+				<code>main</code> function, we set our color output to a
+				<code>vec4</code> with all of it's components equal to 1. In
+				OpenGL, colors range from 0 to 1, unlike what you might be used
+				to in things like image editing programs where colors range from
+				0-255. 0 is no color, 1 is full color, 0.5 is half color, etc.
+				By setting the color to all ones, we can expect that our final
+				triangle will be all white.
+			</p>
+			<h3>Compiling and Using the Shaders</h3>
+			<p>
+				Now that we have our shaders, we need to give OpenGL them so
+				that they can be compiled and used. I'll asume that you can get
+				the shaders into strings yourself for simplicity's sake.
+			</p>
+			<pre>
+<span class="code-comment">// C, in initialization</span>
+<span class="code-type">GLuint</span> <span class="code-var">vertex</span> = <span class="code-func">glCreateShader</span>(<span class="code-constant">GL_VERTEX_SHADER</span>);
+<span class="code-func">glShaderSource</span>(<span class="code-var">vertex</span>, <span class="code-var">stringsInArrayForVertex</span>, <span class="code-var">arrayOfStringsForVertex</span>, (<span class="code-type">GLint</span>*) <span class="code-literal">0</span>);
+<span class="code-func">glCompileShader</span>(<span class="code-var">vertex</span>);
+
+<span class="code-type">GLuint</span> <span class="code-var">fragment</span> = <span class="code-func">glCreateShader</span>(<span class="code-constant">GL_FRAGMENT_SHADER</span>);
+<span class="code-func">glShaderSource</span>(<span class="code-var">fragment</span>, <span class="code-var">stringsInArrayForFragment</span>, <span class="code-var">arrayOfStringsForFragment</span>, (<span class="code-type">GLint</span>*) <span class="code-literal">0</span>);
+<span class="code-func">glCompileShader</span>(<span class="code-var">fragment</span>);
+</pre>
+			<p>
+				This code does creates two shaders, a vertex shader and a
+				fragment shader. We use <code>glShaderSource</code> to upload
+				our shaders' source code to OpenGL. The
+				<code>stringsInArrayFor*</code> variables are integers that
+				tell OpenGL the length of the string arrays. This can be 1 if
+				you are passing OpenGL a pointer to a single string. The
+				<code>arrayOfStringsFor*</code> variables are arrays of strings
+				containing each shader's source code. Note these are arrays of
+				strings, so it takes a <code>GLchar**</code>. The final paramter
+				tells OpenGL that each string is null-terminated.
+				<code>glCompileShader</code> is self-explanitory, and we will
+				cover how to get information on if the shaders compiled
+				successfully and if they didn't why they didn't later.
+			</p>
+			<p>
+				We have our shader objects now, so next we need to link them
+				into a shader program.
+			</p>
+			<pre>
+<span class="code-comment">// C, in initialization</span>
+<span class="code-type">GLuint</span> <span class="code-var">shaderProgram</span> = <span class="code-func">glCreateProgram</span>();
+<span class="code-func">glAttachShader</span>(<span class="code-var">shaderProgram</span>, <span class="code-var">vertex</span>);
+<span class="code-func">glAttachShader</span>(<span class="code-var">shaderProgram</span>, <span class="code-var">fragment</span>);
+<span class="code-func">glLinkProgram</span>(<span class="code-var">shaderProgram</span>);
+
+<span class="code-func">glDeleteShader</span>(<span class="code-var">vertex</span>);
+<span class="code-func">glDeleteShader</span>(<span class="code-var">fragment</span>);
+
+<span class="code-func">glUseProgram</span>(<span class="code-var">program</span>);
+</pre>
+			<p>
+				Here we create a shader program, attach our two shaders to it
+				and link the program together! Then we tell OpenGL we want to
+				use it by calling <code>glUseProgram</code>. We delete the
+				shaders after they've been attached and linked because their
+				data has been copied to the shader program, so they're just
+				taking up space.
+			</p>
+			<h2>
+				<a id="render-the-triangle" class="scrollitem"></a>
+				Rendering the Triangle
+			</h2>
+			<p>
+				Everything is set up now, OpenGL has our vertex data, knows
+				where to put it, we've given it instructions for what to do
+				with the data, and now all we have to do is render it. We should
+				also clear the screen before we render it so that previous
+				frames don't affect the current one.
+			</p>
+			<pre>
+<span class="code-comment">// C, in render function</span>
+<span class="code-type">GLfloat</span> <span class="code-var">color</span>[<span class="code-literal">4</span>] = {<span class="code-literal">0.0f</span>, <span class="code-literal">0.0f</span>, <span class="code-literal">0.0f</span>, <span class="code-literal">1.0f</span>};
+<span class="code-func">glClearBufferfv</span>(<span class="code-constant">GL_COLOR</span>, <span class="code-literal">0</span>, <span class="code-var">color</span>);
+<span class="code-func">glDrawArrays</span>(<span class="code-constant">GL_TRIANGLES</span>, <span class="code-literal">0</span>, <span class="code-literal">3</span>);
+</pre>
+			<p>
+				In order to clear the screen we call
+				<code>glClearBufferfv</code> telling it we want to clear the
+				color buffer of the screen and pass it a pointer to four floats
+				containing the color we want to clear it to. We clear it to
+				black. Then we render our triangle with a call to
+				<code>glDrawArrays</code>. We tell it that we're drawing
+				triangles, to start at the first vertex, and that we want to
+				render 3 vertices. Now there's a triangle on the screen!
+				<img src="first-triangle.png">
+			</p>
+		</div>
+	</body>
+</html>

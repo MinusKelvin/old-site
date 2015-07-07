@@ -118,11 +118,36 @@ p {
 
 img {
 	max-width: 100%;
+	display: block;
+	margin: 16px auto;
+	box-shadow: 0 0 8px gray;
 }
 
 ul.project-list {
 	list-style-type: none;
 	padding-left: 16px;
+}
+
+ol.contents-list {
+	counter-reset: section;
+	list-style: none;
+	padding-left: 20px;
+}
+
+ol.contents-list li:before {
+	counter-increment: section;
+	content: counter(section) ". ";
+}
+
+ol.contents-sublist {
+	counter-reset: subsection;
+	list-style: none;
+	padding-left: 20px;
+}
+
+ol.contents-sublist li:before {
+	counter-increment: subsection;
+	content: counter(section) "." counter(subsection) ". ";
 }
 
 input[type=email] {
@@ -135,4 +160,56 @@ textarea {
 	font-family: sans-serif;
 	padding-left: 1px;
 	padding-right: 1px;
+}
+
+a.scrollitem {
+	position: relative;
+	top: -64px;
+	display:block;
+	visibility: hidden;
+}
+
+code, pre {
+	font-family: "Source Code Pro", Consolas, "Courier New", Courier, monospace;
+}
+
+pre {
+	margin-left: auto;
+	margin-right: auto;
+	width: 90%;
+	background-color: #333;
+	padding: 8px;
+	border: 1px solid #777;
+	border-radius: 4px;
+	color: #eee;
+	white-space: pre-wrap;
+}
+
+.code-comment {
+	color: #888;
+}
+
+.code-keyword {
+	color: #f95;
+}
+
+.code-type {
+	color: #7e8;
+}
+
+.code-var {
+	color: #6bf;
+}
+
+.code-func {
+	color: #ff5;
+}
+
+.code-literal {
+	color: #e66;
+}
+
+.code-constant {
+	color: #6bf;
+	font-style: italic;
 }
