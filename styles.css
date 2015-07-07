@@ -18,7 +18,7 @@ a:hover, a:focus {
 
 div#header {
 	background-color: #333;
-	box-shadow: 0 0 8px gray;
+	box-shadow: 0 0 8px black;
 	position: fixed;
 	width: 100%;
 	top: 0;
