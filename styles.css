@@ -43,7 +43,7 @@ div#header a.navbar {
 	border-bottom: 4px solid gray;
 	padding-bottom: 12px;
 	background-color: #333;
-	transition: background-color 0.25s, inherit;
+	transition: background-color 0.25s, color 0.25s;
 }
 
 div#header a.navbar:hover, div#header a.navbar:focus {
