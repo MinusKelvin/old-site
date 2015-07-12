@@ -4,7 +4,7 @@
 		<title>Cool Brush</title>
 	</head>
 	<body style="width: 100%; height: 100%; margin: 0px; overflow: hidden;" onresize="resize();">
-		<canvas id="c" width="800" height="480" style="box-shadow: 0 0 0.5em gray;" onmousedown="md();" onmouseup="mu();" onmousemove="mv(event);"></canvas>
+		<canvas id="c" width="800" height="480" style="box-shadow: 0 0 0.5em gray;" onmousedown="md();" onmouseup="mu();" onmousemove="mv(event);" ontouchstart="md();" ontouchend="mu();" ontouchmove="mv(event);"></canvas>
 		<h3 style="position:absolute; left:10px; top:10px; font-family:Arial; padding:0px; margin:0;">Click and drag to draw!</h3>
 		<script>
 			function resize() {
@@ -27,6 +27,10 @@
 			}
 			function mv(event) {
 				if (mdown) {
+					if (event.touches != undefined) {
+						event.clientX = event.touches[0].clientX;
+						event.clientY = event.touches[0].clientY;
+					}
 					placePoint(event);
 				}
 			}
