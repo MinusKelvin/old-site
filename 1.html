@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>2D Tile Game Planning</title>
+		<link rel="stylesheet" type="text/css" href="styles.css"/>
+	</head>
+	<body>
+		<div id="header">
+			<div id="header-center"><!-- Yay for getting-around-certain-aspects-of-distplay-inline-block hackery!
+			--><a id="home" href="index.html">
+					<h2>MinusKelvin</h2>
+				</a><!--
+			--><ul id="navbar-items"><!--
+				--><li>
+						<a class="navbar" href="about.html" style="border-bottom-color: blue">
+							<h3>About</h3>
+						</a>
+					</li><!--
+				--><li>
+						<a class="navbar" href="projects.html" style="border-bottom-color: green">
+							<h3>Projects</h3>
+						</a>
+					</li><!--
+				--><li>
+						<a class="navbar" href="contact.html" style="border-bottom-color: red">
+							<h3>Contact</h3>
+						</a>
+					</li><!--
+			--></ul><!--
+			--><div id="borderfill"></div><!--
+		--></div>
+		</div>
+		<div id="content">
+			<h1>2D Tile Game Planning</h1>
+			<p>
+				I'm bored, so I'll do what I always seem do when I'm bored: attempt to clone something.
+				As with all my clones, they don't try to be a straight copy of whatever they're a clone of.
+				So what am I cloning this time? Terraria / Starbound.
+			</p>
+			<p>
+				It's been long enough since I last touched my <a href="https://github.com/minuskelvin/Miner/">Miner</a> project that I think I should start from scratch again.
+				I can't even remember where in development that project was.
+				So I decided that this time I would plan out what features I want my game to have first, and then start working on it afterwards.
+				I've heard a lot about planning things too detailed too far ahead can lead to catastrophic failure, so I'll just make a general outline.
+			</p>
+			<h2>Features</h2>
+			<ul>
+				<li>Subtile collision</li>
+				<li>Dynamic lighting with shadows</li>
+				<li>Infinite world</li>
+				<li>Biomes</li>
+				<li>Caves</li>
+				<li>Ores</li>
+				<li>Technology tree</li>
+			</ul>
+			<p>
+				I feel that that might be somewhat ambitious, but mostly because of the later content-based features.
+				I listed the more technically-challenging features first, since they are more interesting and were the first I came up with.
+				So now I'm going to discuss possible implementations for these, to hopefully know about what I need to do to get these working.
+			</p>
+			<h2>Subtile Collision</h2>
+			<p>
+				I've only ever implemented solid-tile based collision before, but subtile collision should be a relatively simple extension to that.
+			</p>
+			<p>
+				The simplest case for subtile collision would be changing the location of the side of the tile.
+				Normal tiles have the left and right sides at 0 and 1 respectively.
+				Another tile, such as a fence, would have its left and right sides be at 0.25 and 0.75 respectively, making it only half a tile wide.
+				Then the same for the bottom and top sides, which are normally at 0 and 1 respectively.
+				Something like a half-slab would have its bottom and top sides be at 0 and 0.5 respectively.
+			</p>
+			<p>
+				Things get a bit more complicated when we try and do more complex shapes.
+				Stairs, at least ones similar to what is in Minecraft, can't be done by simply giving them side locations.
+				Stairs would have its top side be at 0.5 on the left half of the tile and 1 on the right half.
+				Same with the left side, 0 on the bottom half and 0.5 on the top half.
+				This can probably be handled by special functions.
+			</p>
+			<p>
+				Last special case: slanted slopes.
+				These things are a pain.
+				The special functions to handle these are going to start to get pretty complicated rather quickly.
+				The main issue with these is that you are able to travel up and down them.
+				The complexity of this should be apparent, since there are a LOT of variables involved.
+			</p>
+			<h2>Dynamic Lighting with Shadows</h2>
+			<p>
+				The &quot;with shadows&quot; is the difficult part here.
+				I can't use a flood-fill algorithm because it doesn't have shadows, so I need something quite a bit more complex.
+				I have come up with a list of possible implementations for these, but none of them seem perfect.
+			</p>
+			<p>
+				My first implementation: My own hand-designed system.
+				This involves storing a bunch of data per-block-corner, and sometimes per-block-side data.
+				It basically goes each corner has 2 values: a direction and if it's lit or not.
+				The values for each corner are calculated per-block with a whole ton of math.
+				The advantage is that as a tile system it plays nicely with all the other tile systems.
+				The limitations are that light can't go through tiles, it doesn't support moving lights well,
+				it cannot be used for sunlight, and the shadows are not at screen-resolution and will look jagged.
+			</p>
+			<p>
+				Second implementation: Generating light polygons
+				This involves calculating a bunch of polygons that form the area that is visible from the light.
+				The math involved is relatively complicated.
+				The advantages are that shadows are screen-resolution and light can go through tiles however much I want.
+				The limitations are that it cannot be used for sunlight, it doesn't play nice with the other tile systems, and it doesn't support moving lights well.
+			</p>
+			<p>
+				Last implementation: Shadow maps
+				This could be done by rendering the world then transforming it to polar space, or using &quot;square map&quot; textures.
+				The idea is a shadow map is generated from the world geometry, and then at final rendering it's used to draw the shadows.
+				The advantages are that shadows are near screen-resolution, light can go through tiles however much I want,
+				it can be used from sunlight, and it should be able to support moving lights.
+				The limitations are that it is hard to implement and it doesn't play nice with the other tile systems.
+			</p>
+			<h2>Infinite World</h2>
+			<p>
+				The Java garbage collector doesn't like me having large amounts of memory being used, so I need to only store in memory what I need.
+				The easiest way to do that would be the have a chunking system.
+				The chunking system might be able to simplify certain aspects of terrain generation as well.
+				I don't have more to say about this.
+			</p>
+			<h2>The rest of them</h2>
+			<p>
+				These currently have few enough details that they can be summed up in about a line, so here we go.
+				Biomes are tricky mostly because of transitions between them. Kindof hard to go from Mountains to Ocean.
+				Caves are probably able to be generated with 2D OpenSimplex noise.
+				Ores will probably include Copper, Tin, Iron, Lead, Silver, Gold, Diamond, Ruby, Emerald, and Sapphire.
+				The technology tree with be planned out later.
+			</p>
+			<p>
+				That's probably enough planning for now, hopefully.
+			</p>
+			<div id="disqus_thread"></div>
+<script>
+/**
+* RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+* LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+*/
+
+var disqus_config = function () {
+this.page.url = "http://minuskelvin.github.io/1.html"; // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = 1; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//minuskelvin.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+		</div>
+	</body>
+</html>
