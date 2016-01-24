@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Contemplating the 3rd Dimension</title>
+		<link rel="stylesheet" type="text/css" href="styles.css"/>
+	</head>
+	<body>
+		<div id="header">
+			<div id="header-center"><!-- Yay for getting-around-certain-aspects-of-distplay-inline-block hackery!
+			--><a id="home" href="index.html">
+					<h2>MinusKelvin</h2>
+				</a><!--
+			--><ul id="navbar-items"><!--
+				--><li>
+						<a class="navbar" href="about.html" style="border-bottom-color: blue">
+							<h3>About</h3>
+						</a>
+					</li><!--
+				--><li>
+						<a class="navbar" href="projects.html" style="border-bottom-color: green">
+							<h3>Projects</h3>
+						</a>
+					</li><!--
+				--><li>
+						<a class="navbar" href="contact.html" style="border-bottom-color: red">
+							<h3>Contact</h3>
+						</a>
+					</li><!--
+			--></ul><!--
+			--><div id="borderfill"></div><!--
+		--></div>
+		</div>
+		<div id="content">
+			<h1>Contemplating the 3rd Dimension</h1>
+			<p>
+				I'm thinking of making my 2D tile game a 3D tile game since I've written a fast voxel renderer, but at that point it might just seem like a Minecraft clone.
+				I've also settled on the working title &quot;Tile Tech&quot; for my game.
+			</p>
+			<p>
+				So now let's go over the pros and cons of using 3D for Tile Tech:
+				<h2>Pros</h2>
+				<ul>
+					<li>Only lighting algorithm fast enough is floodfill; lighting is really simple</li>
+					<li>Extra dimension makes building stuff far more flexible</li>
+					<li>Stuff like attacking is much simpler</li>
+				</ul>
+				<h2>Cons</h2>
+				<ul>
+					<li>Lighting is less awesome</li>
+					<li>Another dimension means much higher memory usage</li>
+					<li>Another dimension also means there are more things to check and so CPU usage is much higher</li>
+					<li>I have to make models for things</li>
+				</ul>
+				All in all I think the pros outweigh the cons, and since I've started plenty of 2D tile games it's a nice change of pace.
+			</p>
+			<div id="disqus_thread"></div>
+<script>
+/**
+* RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+* LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+*/
+
+var disqus_config = function () {
+this.page.url = "http://minuskelvin.github.io/2.html"; // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = 2; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//minuskelvin.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+		</div>
+	</body>
+</html>
