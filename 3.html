@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8"/>
-		<title>Contemplating the 3rd Dimension</title>
+		<title>MinusKelvin</title>
 		<link rel="stylesheet" type="text/css" href="styles.css"/>
 	</head>
 	<body>
@@ -32,27 +32,23 @@
 		--></div>
 		</div>
 		<div id="content">
-			<h1>Contemplating the 3rd Dimension<div class="timestamp">2016-01-25</div></h1>
+			<h1>Progress looks nice<div class="timestamp">2016-02-18</div></h1>
 			<p>
-				I'm thinking of making my 2D tile game a 3D tile game since I've written a fast voxel renderer, but at that point it might just seem like a Minecraft clone.
-				I've also settled on the working title &quot;Tile Tech&quot; for my game.
+				I've ported my <a href="https://github.com/MinusKelvin/voxel">voxel renderer</a> to Java and added a few features.
+				The first things you'll probably notice are the view distance, then the trees, and then the fact that I'm caved in a bit.
+			</p>
+			<img src="tiletech-2016-02-18.png"/>
+			<p>
+				The render distance in this screenshot is about 512 meters. That's equivalent to Minecraft with the render distance set to 32 chunks.
+				It also only takes about 4-5 milliseconds to render, thanks to a small optimization: only rendering what could be visible.
 			</p>
 			<p>
-				So now let's go over the pros and cons of using 3D for Tile Tech:
-				<h2>Pros</h2>
-				<ul>
-					<li>Only lighting algorithm fast enough is floodfill; lighting is really simple</li>
-					<li>Extra dimension makes building stuff far more flexible</li>
-					<li>Stuff like attacking is much simpler</li>
-				</ul>
-				<h2>Cons</h2>
-				<ul>
-					<li>Lighting is less awesome</li>
-					<li>Another dimension means much higher memory usage</li>
-					<li>Another dimension also means there are more things to check and so CPU usage is much higher</li>
-					<li>I have to make models for things</li>
-				</ul>
-				All in all I think the pros outweigh the cons, and since I've started plenty of 2D tile games it's a nice change of pace.
+				The trees are a nice thing to look at, they add a bit to the scene.
+			</p>
+			<p>
+				I'm standing in a bit of a cave-like area, but it wasn't generated.
+				I dug that out since I have block picking implemented, and couldn't really think of a good way to show it off.
+				Now all I gotta do is implement some of the core systems&mdash;gui, items, inventory, and whatnot.
 			</p>
 			<div id="disqus_thread"></div>
 <script>
@@ -62,8 +58,8 @@
 */
 
 var disqus_config = function () {
-this.page.url = "http://minuskelvin.github.io/2.html"; // Replace PAGE_URL with your page's canonical URL variable
-this.page.identifier = 2; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+this.page.url = "http://minuskelvin.github.io/3.html"; // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = 3; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
 };
 
 (function() { // DON'T EDIT BELOW THIS LINE

@@ -213,3 +213,13 @@ pre {
 	color: #6bf;
 	font-style: italic;
 }
+
+.timestamp {
+	margin-top: 8px;
+	font-size: 55%;
+	font-weight: bold;
+}
+
+.timestamp::before {
+	content: "Posted: ";
+}
