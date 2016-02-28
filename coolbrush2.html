@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Color thing</title>
+	</head>
+	<body>
+		<canvas id="canvas" width="3840" height="2160" style="width: 90%; box-shadow: 0 0 5px #000000;"></canvas>
+		<script>
+
+var POINT_COUNT = 400;
+
+function dist(p1, p2) {
+	return Math.sqrt((p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y));
+}
+
+function getRandomColor() {
+	var letters = '0123456789ABCDEF'.split('');
+	var color = '#';
+	for (var i = 0; i < 6; i++ ) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+}
+
+var canvas = document.getElementById("canvas");
+var points = [];
+for (var i = 0; i < POINT_COUNT; i++) {
+	points[i] = {x:Math.random()*3480+180, y:Math.random()*1800+180};
+}
+
+var context = canvas.getContext("2d");
+
+context.beginPath();
+context.rect(0,0,3840,2160);
+context.closePath();
+var gradient = context.createLinearGradient(0,0,3840,2160);
+gradient.addColorStop(0, getRandomColor());
+//gradient.addColorStop(0.1, getRandomColor());
+//gradient.addColorStop(0.2, getRandomColor());
+//gradient.addColorStop(0.3, getRandomColor());
+//gradient.addColorStop(0.4, getRandomColor());
+//gradient.addColorStop(0.5, getRandomColor());
+//gradient.addColorStop(0.6, getRandomColor());
+//gradient.addColorStop(0.7, getRandomColor());
+//gradient.addColorStop(0.8, getRandomColor());
+//gradient.addColorStop(0.9, getRandomColor());
+gradient.addColorStop(1, getRandomColor());
+context.fillStyle = gradient;
+context.fill();
+
+for (var i = 0; i < POINT_COUNT; i++) {
+	var closest = 999999;
+	for (var j = 0; j < POINT_COUNT; j++) {
+		if (i != j) {
+			closest = Math.min(closest, dist(points[i], points[j]));
+		}
+	}
+	context.beginPath();
+	context.arc(points[i].x, points[i].y, closest, 0, 2*Math.PI);
+	context.closePath();
+	var color = getRandomColor();
+	gradient = context.createLinearGradient(points[i].x+closest*1.5, points[i].y+closest*1.5, points[i].x-closest, points[i].y-closest);
+	gradient.addColorStop(0, "black");
+	gradient.addColorStop(1, color);
+	context.fillStyle = gradient;
+	context.fill();
+}
+
+		</script>
+	</body>
+</html>
