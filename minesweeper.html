@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Minesweeper</title>
+		<style>
+html,body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	text-align: center;
+}
+#wrapper {
+	display: inline-block;
+	width: 175vh;
+	position: relative;
+}
+#wrapper:after{
+	display: block;
+	padding-top: 53.333%;
+	content: '';
+}
+#gamespace {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+}
+.row {
+	display: flex;
+	flex: 1;
+}
+.tile {
+	flex: 1;
+	border: 1px solid gray;
+}
+.hidden {
+	background-color: lightgray;
+}
+.shown {
+	background-color: #eee;
+}
+.flag {
+	background-color: darkred;
+}
+.mine {
+	background-color: #444;
+}
+.badflag {
+	background-color: pink;
+}
+#minesleft {
+}
+		</style>
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="gamespace">
+				
+			</div>
+		</div>
+		<div id="minesleft"></div>
+<script>
+var gameboard = [];
+var gameStarted = false;
+var hiddenTiles;
+var mines;
+var minesDisplay = document.createTextNode("99");
+document.getElementById("minesleft").appendChild(minesDisplay);
+
+function generateGameboard(x,y) {
+	for (var i = 0; i < 16; i++) {
+		for (var j = 0; j < 30; j++) {
+			gameboard[i][j].flag = false;
+			gameboard[i][j].state = false;
+			gameboard[i][j].mine = false;
+			gameboard[i][j].elem.className = "tile hidden";
+			while (gameboard[i][j].elem.firstChild)
+				gameboard[i][j].elem.removeChild(gameboard[i][j].elem.firstChild);
+		}
+	}
+	hiddenTiles = 30*16;
+	mines = 99;
+	minesDisplay.nodeValue = ""+mines;
+	for (var i = 0; i < 99; i++) {
+		var planted = false;
+		while (!planted) {
+			var px = Math.floor(Math.random() * 30);
+			var py = Math.floor(Math.random() * 16);
+			if ((px > x+1 || px < x-1 || py > y+1 || py < y-1) && !gameboard[py][px].mine) {
+				gameboard[py][px].mine = true;
+				planted = true;
+			}
+		}
+	}
+	gameStarted = true;
+}
+
+function gameover() {
+	for (var i = 0; i < 16; i++) {
+		for (var j = 0; j < 30; j++) {
+			var t = gameboard[i][j];
+			if (t.flag && t.mine) {
+				t.elem.className = "tile flag";
+			} else if (t.flag) {
+				t.elem.className = "tile badflag";
+			} else if (t.mine) {
+				t.elem.className = "tile mine";
+			}
+		}
+	}
+	gameStarted = false;
+}
+
+function reveal(x,y) {
+	if (x < 0 || x >= 30 || y < 0 || y >= 16) {
+		return;
+	}
+	var tile = gameboard[y][x];
+	if (tile.mine) {
+		gameover();
+	} else if (!tile.state) {
+		tile.state = true;
+		hiddenTiles -= 1;
+		tile.elem.className = "tile shown";
+		var minecount = 0;
+		for (var i = y-1; i <= y+1; i++) {
+			for (var j = x-1; j <= x+1; j++) {
+				if (!(i < 0 || i >= 16 || j < 0 || j >= 30)) {
+					if (gameboard[i][j].mine) minecount++;
+				}
+			}
+		}
+		if (minecount == 0) {
+			for (var i = y-1; i <= y+1; i++) {
+				for (var j = x-1; j <= x+1; j++) {
+					reveal(j,i);
+				}
+			}
+		} else {
+			var txt = document.createTextNode(""+minecount);
+			tile.elem.appendChild(txt);
+		}
+	}
+}
+
+function setup(tile, x, y) {
+	tile.elem.addEventListener("mousedown", function(e) {
+		if (!gameStarted)
+			generateGameboard(x,y);
+		if (e.button == 0) {
+			if (tile.state) {
+				var minecount = 0;
+				var flagcount = 0;
+				for (var i = y-1; i <= y+1; i++) {
+					for (var j = x-1; j <= x+1; j++) {
+						if (!(i < 0 || i >= 16 || j < 0 || j >= 30) && gameboard[i][j].mine) minecount++;
+						if (!(i < 0 || i >= 16 || j < 0 || j >= 30) && gameboard[i][j].flag) flagcount++;
+					}
+				}
+				if (minecount == flagcount) {
+					for (var i = y-1; i <= y+1; i++) {
+						for (var j = x-1; j <= x+1; j++) {
+							if (!(i < 0 || i >= 16 || j < 0 || j >= 30) && !gameboard[i][j].flag)
+								reveal(j,i);
+						}
+					}
+				}
+			} else if (!gameboard[y][x].flag)
+				reveal(x,y);
+			if (hiddenTiles == 99) {
+				alert("You won!");
+				gameStarted = false;
+			}
+		} else if (e.button == 2) {
+			if (!tile.state) {
+				if (tile.flag) {
+					mines += 1;
+					minesDisplay.nodeValue = ""+mines;
+					tile.flag = false;
+					tile.elem.className = "tile hidden";
+				} else {
+					mines -= 1;
+					minesDisplay.nodeValue = ""+mines;
+					tile.flag = true;
+					tile.elem.className = "tile flag";
+				}
+			}
+		}
+	});
+	tile.elem.addEventListener("contextmenu", function(e) { e.preventDefault(); });
+}
+
+var gs = document.getElementById("gamespace");
+for (var i = 0; i < 16; i++) {
+	var row = document.createElement("div");
+	gs.appendChild(row);
+	row.className="row";
+	gameboard[i] = [];
+	for (var j = 0; j < 30; j++) {
+		var tile = document.createElement("div");
+		row.appendChild(tile);
+		tile.className="tile hidden";
+		gameboard[i][j] = {state:false,mine:false,flag:false,elem:tile};
+		setup(gameboard[i][j],j,i);
+	}
+}
+</script>
+	</body>
+</html>
