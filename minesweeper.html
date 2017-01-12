@@ -63,19 +63,63 @@ html,body {
 			</div>
 		</div>
 		<div id="minesleft"></div>
+		<div>
+			<select id="gameType">
+				<option value="mines">Minesweeper</option>
+				<option value="knights">Knightsweeper</option>
+			</select>
+		</div>
 <script>
 var gameboard = [];
 var gameStarted = false;
+var gameOver = false;
 var hiddenTiles;
 var mines;
+var adjacentRelative;
 var minesDisplay = document.createTextNode("99");
 document.getElementById("minesleft").appendChild(minesDisplay);
+
+var adjacentMines = [
+	{x: -1, y: -1},
+	{x: 0, y: -1},
+	{x: 1, y: -1},
+	{x: -1, y: 0},
+	{x: 0, y: 0},
+	{x: 1, y: 0},
+	{x: -1, y: 1},
+	{x: 0, y: 1},
+	{x: 1, y: 1},
+];
+
+var adjacentKnights = [
+	{x: -1, y: -2},
+	{x: 1, y: -2},
+	{x: -2, y: -1},
+	{x: 2, y: -1},
+	{x: -1, y: 2},
+	{x: 1, y: 2},
+	{x: -2, y: 1},
+	{x: 2, y: 1},
+];
+
+adjacentRelative = adjacentMines;
+
+function getAdjacencies(x, y) {
+	var adj = [];
+	for (var i = 0; i < adjacentRelative.length; i++) {
+		adj[i] = {
+			x: x + adjacentRelative[i].x,
+			y: y + adjacentRelative[i].y
+		};
+	}
+	return adj;
+}
 
 function generateGameboard(x,y) {
 	for (var i = 0; i < 16; i++) {
 		for (var j = 0; j < 30; j++) {
 			gameboard[i][j].flag = false;
-			gameboard[i][j].state = false;
+			gameboard[i][j].shown = false;
 			gameboard[i][j].mine = false;
 			gameboard[i][j].elem.className = "tile hidden";
 			while (gameboard[i][j].elem.firstChild)
@@ -96,6 +140,9 @@ function generateGameboard(x,y) {
 			}
 		}
 	}
+	for (var i = x-1; i <= x+1; i++)
+		for (var j = y-1; j <= y+1; j++)
+			reveal(i,j)
 	gameStarted = true;
 }
 
@@ -113,6 +160,20 @@ function gameover() {
 		}
 	}
 	gameStarted = false;
+	gameOver = true;
+}
+
+function isMine(x, y) {
+	if (x < 0 || x >= 30 || y < 0 || y >= 16) {
+		return false;
+	}
+	return gameboard[y][x].mine;
+}
+
+function isFlag(x, y) {
+	if (x < 0 || x >= 30 || y < 0 || y >= 16)
+		return false;
+	return gameboard[y][x].flag;
 }
 
 function reveal(x,y) {
@@ -122,23 +183,20 @@ function reveal(x,y) {
 	var tile = gameboard[y][x];
 	if (tile.mine) {
 		gameover();
-	} else if (!tile.state) {
-		tile.state = true;
+	} else if (!tile.shown) {
+		tile.shown = true;
 		hiddenTiles -= 1;
 		tile.elem.className = "tile shown";
 		var minecount = 0;
-		for (var i = y-1; i <= y+1; i++) {
-			for (var j = x-1; j <= x+1; j++) {
-				if (!(i < 0 || i >= 16 || j < 0 || j >= 30)) {
-					if (gameboard[i][j].mine) minecount++;
-				}
+		var adjacent = getAdjacencies(x, y)
+		for (var i = 0; i < adjacent.length; i++) {
+			if (isMine(adjacent[i].x, adjacent[i].y)) {
+				minecount++;
 			}
 		}
 		if (minecount == 0) {
-			for (var i = y-1; i <= y+1; i++) {
-				for (var j = x-1; j <= x+1; j++) {
-					reveal(j,i);
-				}
+			for (var i = 0; i < adjacent.length; i++) {
+				reveal(adjacent[i].x,adjacent[i].y);
 			}
 		} else {
 			var txt = document.createTextNode(""+minecount);
@@ -147,26 +205,39 @@ function reveal(x,y) {
 	}
 }
 
+function reset() {
+	gameOver = false;
+	gameStarted = false;
+	for (var i = 0; i < 16; i++) {
+		for (var j = 0; j < 30; j++) {
+			gameboard[i][j].elem.className = "tile hidden";
+			while (gameboard[i][j].elem.firstChild)
+				gameboard[i][j].elem.removeChild(gameboard[i][j].elem.firstChild);
+		}
+	}
+}
+
 function setup(tile, x, y) {
 	tile.elem.addEventListener("mousedown", function(e) {
+		if (gameOver) {
+			reset();
+			return;
+		}
 		if (!gameStarted)
 			generateGameboard(x,y);
 		if (e.button == 0) {
-			if (tile.state) {
+			if (tile.shown) {
 				var minecount = 0;
 				var flagcount = 0;
-				for (var i = y-1; i <= y+1; i++) {
-					for (var j = x-1; j <= x+1; j++) {
-						if (!(i < 0 || i >= 16 || j < 0 || j >= 30) && gameboard[i][j].mine) minecount++;
-						if (!(i < 0 || i >= 16 || j < 0 || j >= 30) && gameboard[i][j].flag) flagcount++;
-					}
+				var adjacent = getAdjacencies(x, y)
+				for (var i = 0; i < adjacent.length; i++) {
+					if (isMine(adjacent[i].x, adjacent[i].y)) minecount++;
+					if (isFlag(adjacent[i].x, adjacent[i].y)) flagcount++;
 				}
 				if (minecount == flagcount) {
-					for (var i = y-1; i <= y+1; i++) {
-						for (var j = x-1; j <= x+1; j++) {
-							if (!(i < 0 || i >= 16 || j < 0 || j >= 30) && !gameboard[i][j].flag)
-								reveal(j,i);
-						}
+					for (var i = 0; i < adjacent.length; i++) {
+						if (!isFlag(adjacent[i].x, adjacent[i].y))
+							reveal(adjacent[i].x, adjacent[i].y);
 					}
 				}
 			} else if (!gameboard[y][x].flag)
@@ -176,7 +247,7 @@ function setup(tile, x, y) {
 				gameStarted = false;
 			}
 		} else if (e.button == 2) {
-			if (!tile.state) {
+			if (!tile.shown) {
 				if (tile.flag) {
 					mines += 1;
 					minesDisplay.nodeValue = ""+mines;
@@ -194,6 +265,19 @@ function setup(tile, x, y) {
 	tile.elem.addEventListener("contextmenu", function(e) { e.preventDefault(); });
 }
 
+var gameType = document.getElementById("gameType");
+gameType.addEventListener("change", function() {
+	switch (gameType.options[gameType.selectedIndex].value) {
+		case "mines":
+			adjacentRelative = adjacentMines;
+			break;
+		case "knights":
+			adjacentRelative = adjacentKnights;
+			break;
+	}
+	reset();
+});
+
 var gs = document.getElementById("gamespace");
 for (var i = 0; i < 16; i++) {
 	var row = document.createElement("div");
@@ -204,7 +288,7 @@ for (var i = 0; i < 16; i++) {
 		var tile = document.createElement("div");
 		row.appendChild(tile);
 		tile.className="tile hidden";
-		gameboard[i][j] = {state:false,mine:false,flag:false,elem:tile};
+		gameboard[i][j] = {shown:false,mine:false,flag:false,elem:tile};
 		setup(gameboard[i][j],j,i);
 	}
 }
