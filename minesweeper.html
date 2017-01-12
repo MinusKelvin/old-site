@@ -243,6 +243,7 @@ function setup(tile, x, y) {
 			} else if (!gameboard[y][x].flag)
 				reveal(x,y);
 			if (hiddenTiles == 99) {
+				gameOver = true;
 				alert("You won!");
 				gameStarted = false;
 			}
